@@ -20,7 +20,7 @@ const modal = new WalletConnectModal({
 });
 
 // 4. create provider instance
-const provider = await UniversalProvider.init({
+const provider =  await UniversalProvider.init({
   logger: "error",
   projectId: projectId,
   metadata: {

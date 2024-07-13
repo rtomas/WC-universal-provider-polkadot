@@ -38,8 +38,5 @@
     "typescript": "^5.2.2",
     "vite": "^4.4.9",
     "vite-plugin-node-polyfills": "^0.22.0"
-  },
-  "imports": {
-    "@types/tronweb": "./node_modules/@daochild/tronweb-typescript/dist/index.d.ts"
   }
 }
