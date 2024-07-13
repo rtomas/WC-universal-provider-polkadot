@@ -1,6 +1,7 @@
 
 
 import UniversalProvider from "@walletconnect/universal-provider";
+// <reference types="@types/tronweb" />
 import TronWeb from "tronweb";
 
 
