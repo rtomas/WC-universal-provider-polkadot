@@ -45,6 +45,7 @@ const App = () => {
         },
       });
         
+      console.log("provider", providerValue);
       setProvider(providerValue);
     }
     
