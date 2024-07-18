@@ -20,19 +20,18 @@ const modal = new WalletConnectModal({
   chains,
 });
 
-
-
 const App = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState("");
   const [balance, setBalance] = useState<number | null>(null);
+
+  // 4. create State for Universal Provider and tronService
   const [provider, setProvider] = useState<UniversalProvider | null>(null);
   const [tronService, setTronService] = useState<TronService | null>(null);
 
-// --- 
 
 
-
+  // 5. initialize Universal Provider onLoad
   useEffect(() => {
     async function setOnInitProvider() {
       const providerValue = await UniversalProvider.init({
@@ -48,14 +47,17 @@ const App = () => {
         
       setProvider(providerValue);
     }
-
+    
     setOnInitProvider();
+    
   }, []);
 
+  // 6. set tronService and address on provider load
   useEffect(() => {
     if (!provider) return;
     const tronServiceValue = new TronService(provider);
-    
+
+
     provider.on("display_uri", async (uri: string) => {
       console.log("uri", uri);
       await modal.openModal({
@@ -63,12 +65,13 @@ const App = () => {
       });
     });
 
-    // get address once loaded
+    // get address
     setAddress(provider.session?.namespaces.tron?.accounts[0].split(":")[2]!);
     setTronService(tronServiceValue);
   }, [provider]);
 
 
+  // 7. get balance when connected
   useEffect(() => {
     async function  getBalanceInit() {
       if (!tronService) return;
@@ -81,10 +84,7 @@ const App = () => {
     getBalanceInit()
   }, [isConnected, tronService]);
 
-  // 6. handle display_uri event and open modal
-  
-
-  // 7. handle connect event
+  // 8. handle connect event
   const connect = async () => {
     try {
       await provider!.connect({
@@ -104,13 +104,13 @@ const App = () => {
     modal.closeModal();
   };
 
-  // 8. handle disconnect event
+  // 9. handle disconnect event
   const disconnect = async () => {
     await provider!.disconnect();
     setIsConnected(false);
   };
 
-  // 9. handle signMessage and sendTransaction
+  // 10. handle get Balance, signMessage and sendTransaction
   const handleSign = async () => {
     console.log("signing");
     const res = await tronService!.signMessage(
@@ -120,13 +120,11 @@ const App = () => {
     console.log("result sign: ",res);
   };
 
-    // 10. handle get Balance
-    const handleGetBalance = async () => {
-      const res = await tronService!.getBalance(address!);
-      console.log(res);
-      setBalance(res);
-    };
-
+  const handleGetBalance = async () => {
+    const res = await tronService!.getBalance(address!);
+    console.log(res);
+    setBalance(res);
+  };
 
   const handleSendTransaction = async () => {
     console.log("signing");
