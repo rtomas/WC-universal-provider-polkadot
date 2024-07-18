@@ -4,6 +4,11 @@ import { useEffect, useState } from "react";
 
 import { TronService, TronChains } from "./utils/tronService";
 
+type TronAccountNamespace = {
+  accounts?: string[];
+};
+
+
 const projectId = import.meta.env.VITE_PROJECT_ID;
 
 const events: string[] = [];
@@ -30,12 +35,11 @@ const App = () => {
   const [tronService, setTronService] = useState<TronService | null>(null);
 
 
-
   // 5. initialize Universal Provider onLoad
   useEffect(() => {
     async function setOnInitProvider() {
       const providerValue = await UniversalProvider.init({
-        logger: "error",
+        logger: "error", // log level
         projectId: projectId,
         metadata: {
           name: "WalletConnect x Tron",
@@ -45,7 +49,6 @@ const App = () => {
         },
       });
         
-      console.log("provider", providerValue);
       setProvider(providerValue);
     }
     
@@ -53,11 +56,9 @@ const App = () => {
     
   }, []);
 
-  // 6. set tronService and address on provider load
+  // 6. set tronService and address on setProvider
   useEffect(() => {
     if (!provider) return;
-    const tronServiceValue = new TronService(provider);
-
 
     provider.on("display_uri", async (uri: string) => {
       console.log("uri", uri);
@@ -66,9 +67,10 @@ const App = () => {
       });
     });
 
-    // get address
-    setAddress(provider.session?.namespaces.tron?.accounts[0].split(":")[2]!);
-    setTronService(tronServiceValue);
+    /*  */
+
+    //const tronServiceValue = new TronService(provider);
+    //setTronService(tronServiceValue);
   }, [provider]);
 
 
@@ -88,7 +90,9 @@ const App = () => {
   // 8. handle connect event
   const connect = async () => {
     try {
-      await provider!.connect({
+      if (!provider) return;
+
+      await provider.connect({
         namespaces: {
           tron: {
             methods,
@@ -97,8 +101,19 @@ const App = () => {
           },
         },
       });
+
+      const tronServiceValue = new TronService(provider);
+      setTronService(tronServiceValue);
+
+      console.log(provider);
+      if (provider.session)
+        setAddress(provider.session?.namespaces.tron?.accounts[0].split(":")[2]!);
+      else{ 
+        const tron = provider.namespaces!.tron as unknown as TronAccountNamespace
+        setAddress(tron.accounts![0].split(":")[2]!);
+      }
+
       setIsConnected(true);
-      console.log("session", provider!.session);
     } catch {
       console.log("Something went wrong, request cancelled");
     }
@@ -129,7 +144,7 @@ const App = () => {
 
   const handleSendTransaction = async () => {
     console.log("signing");
-    const res = await tronService!.signTransaction(address!, 100);
+    const res = await tronService!.sendTransaction(address!, 100);
     console.log("result send tx: ", res);
   };
 

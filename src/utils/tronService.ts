@@ -10,14 +10,20 @@ export class TronService {
   private provider?: UniversalProvider;
   private isTestnet: boolean;
 
-  constructor(provider?: UniversalProvider) {
+  constructor(provider: UniversalProvider) {
+   
     this.provider = provider;
     this.isTestnet = this.checkTestnet();
   }
 
+  
   private checkTestnet(): boolean {
     if (this.provider) {
-      return this.provider.session!.namespaces.tron.chains?.includes(`tron:${TronChains.Devnet}`) || false;
+      if (this.provider.session)
+        return this.provider.session.namespaces!.tron.chains?.includes(`tron:${TronChains.Devnet}`) || false;
+      else 
+        return this.provider.namespaces!.tron.chains?.includes(`tron:${TronChains.Devnet}`) || false;
+      
     }
     return false;
   }
@@ -72,7 +78,7 @@ export class TronService {
     }
   }
 
-  public async signTransaction(
+  public async sendTransaction(
     address: string,
     amount: number
   ) {
