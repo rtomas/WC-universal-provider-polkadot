@@ -81,3 +81,16 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+
+
+body {
+  background: linear-gradient(135deg, #430a06, #0f020a);
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-family: Arial, sans-serif;
+}
