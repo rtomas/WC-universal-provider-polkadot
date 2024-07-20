@@ -1,13 +1,7 @@
 import UniversalProvider from "@walletconnect/universal-provider";
 import { WalletConnectModal } from "@walletconnect/modal";
 import { useEffect, useState } from "react";
-
 import { TronService, TronChains } from "./utils/tronService";
-
-type TronAccountNamespace = {
-  accounts?: string[];
-};
-
 
 const projectId = import.meta.env.VITE_PROJECT_ID;
 
@@ -66,11 +60,6 @@ const App = () => {
         uri,
       });
     });
-
-    /*  */
-
-    //const tronServiceValue = new TronService(provider);
-    //setTronService(tronServiceValue);
   }, [provider]);
 
 
@@ -93,7 +82,7 @@ const App = () => {
       if (!provider) return;
 
       await provider.connect({
-        namespaces: {
+        optionalNamespaces: {
           tron: {
             methods,
             chains,
@@ -105,13 +94,8 @@ const App = () => {
       const tronServiceValue = new TronService(provider);
       setTronService(tronServiceValue);
 
-      console.log(provider);
-      if (provider.session)
-        setAddress(provider.session?.namespaces.tron?.accounts[0].split(":")[2]!);
-      else{ 
-        const tron = provider.namespaces!.tron as unknown as TronAccountNamespace
-        setAddress(tron.accounts![0].split(":")[2]!);
-      }
+      console.log("session?", provider);
+      setAddress(provider.session?.namespaces.tron?.accounts[0].split(":")[2]!);
 
       setIsConnected(true);
     } catch {
@@ -149,7 +133,8 @@ const App = () => {
   };
 
   return (
-    <div className="App">
+    <div className="App center-content">
+      <h2>WalletConnect + TRON</h2>
       {isConnected ? (
         <>
           <p>
@@ -166,6 +151,9 @@ const App = () => {
       ) : (
         <button onClick={connect}>Connect</button>
       )}
+      <div className="circle">
+        <a href="https://github.com/rtomas/WC-universal-provider-tron" target="_blank"><img src="/github.png" alt="GitHub" width="50" /></a>
+      </div>
     </div>
   );
 };
