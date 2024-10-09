@@ -1,17 +1,17 @@
 import UniversalProvider from "@walletconnect/universal-provider";
 import { WalletConnectModal } from "@walletconnect/modal";
 import { useEffect, useState } from "react";
-import { TronService, TronChains } from "./utils/tronService";
+import { PolkadotService, Chains } from "./utils/polkadotService";
 
 const projectId = import.meta.env.VITE_PROJECT_ID;
 
 const events: string[] = [];
 
-// 1. select chains (tron)
-const chains = [`tron:${TronChains.Mainnet}`];
+// 1. select chains 
+const chains = [`polkadot:${Chains.relayChain}`];
 
-// 2. select methods (tron)
-const methods = ["tron_signMessage", "tron_signTransaction"];
+// 2. select methods
+const methods = ["polkadot_signMessage", "polkadot_signTransaction"];
 
 // 3. create modal instance
 const modal = new WalletConnectModal({
@@ -24,9 +24,9 @@ const App = () => {
   const [address, setAddress] = useState("");
   const [balance, setBalance] = useState<number | null>(null);
 
-  // 4. create State for Universal Provider and tronService
+  // 4. create State for Universal Provider and Service
   const [provider, setProvider] = useState<UniversalProvider | null>(null);
-  const [tronService, setTronService] = useState<TronService | null>(null);
+  const [polkadotService, setPolkadotService] = useState<PolkadotService | null>(null);
 
 
   // 5. initialize Universal Provider onLoad
@@ -36,10 +36,10 @@ const App = () => {
         logger: "error", // log level
         projectId: projectId,
         metadata: {
-          name: "WalletConnect x Tron",
-          description: "Tron integration with WalletConnect's Universal Provider",
-          url: "https://walletconnect.com/",
-          icons: ["https://avatars.githubusercontent.com/u/37784886"],
+          name: "Reown UP & Polkadot",
+          description: "Polkadot integration with Reown's Universal Provider",
+          url: "https://reown.com/",
+          icons: ["https://avatars.githubusercontent.com/u/179229932"],
         },
       });
         
@@ -50,7 +50,7 @@ const App = () => {
     
   }, []);
 
-  // 6. set tronService and address on setProvider
+  // set Service and address on setProvider
   useEffect(() => {
     if (!provider) return;
 
@@ -62,28 +62,14 @@ const App = () => {
     });
   }, [provider]);
 
-
-  // 7. get balance when connected
-  useEffect(() => {
-    async function  getBalanceInit() {
-      if (!tronService) return;
-      const res = await tronService.getBalance(address!);
-
-      setBalance(res!);
-    }
-    
-    if (!isConnected) return; 
-    getBalanceInit()
-  }, [isConnected, tronService]);
-
-  // 8. handle connect event
+  // handle connect event
   const connect = async () => {
     try {
       if (!provider) return;
-
+      console.log("connecting");
       await provider.connect({
         optionalNamespaces: {
-          tron: {
+          polkadot: {
             methods,
             chains,
             events,
@@ -91,11 +77,11 @@ const App = () => {
         },
       });
 
-      const tronServiceValue = new TronService(provider);
-      setTronService(tronServiceValue);
+      const serviceValue = new PolkadotService(provider);
+      setPolkadotService(serviceValue);
 
       console.log("session?", provider);
-      setAddress(provider.session?.namespaces.tron?.accounts[0].split(":")[2]!);
+      setAddress(provider.session?.namespaces.polkadot?.accounts[0].split(":")[2]!);
 
       setIsConnected(true);
     } catch {
@@ -104,47 +90,32 @@ const App = () => {
     modal.closeModal();
   };
 
-  // 9. handle disconnect event
+  // handle disconnect event
   const disconnect = async () => {
     await provider!.disconnect();
     setIsConnected(false);
   };
 
-  // 10. handle get Balance, signMessage and sendTransaction
+  // handle get Balance, signMessage and sendTransaction
   const handleSign = async () => {
     console.log("signing");
-    const res = await tronService!.signMessage(
+    const res = await polkadotService!.signMessage(
       `Can i have authorize this request pls - ${Date.now()}`,
       address!
     );
     console.log("result sign: ",res);
   };
 
-  const handleGetBalance = async () => {
-    const res = await tronService!.getBalance(address!);
-    console.log(res);
-    setBalance(res);
-  };
-
-  const handleSendTransaction = async () => {
-    console.log("signing");
-    const res = await tronService!.sendTransaction(address!, 100);
-    console.log("result send tx: ", res);
-  };
-
   return (
     <div className="App center-content">
-      <h2>WalletConnect + TRON</h2>
+      <h2>Reown + QR + Polkadot</h2>
       {isConnected ? (
         <>
           <p>
-            <b>Address: </b>{address}<br />
-            <b>Balance: </b>{balance}<br />
+            <b>Relay Address: </b>{address}<br />
           </p>
           <div className="btn-container">
-          <button onClick={handleGetBalance}>get Balance</button>
             <button onClick={handleSign}>Sign MSG</button>
-            <button onClick={handleSendTransaction}>Send Transaction</button>
             <button onClick={disconnect}>Disconnect</button>
           </div>
         </>
@@ -152,7 +123,7 @@ const App = () => {
         <button onClick={connect}>Connect</button>
       )}
       <div className="circle">
-        <a href="https://github.com/rtomas/WC-universal-provider-tron" target="_blank"><img src="/github.png" alt="GitHub" width="50" /></a>
+        <a href="https://github.com/rtomas/WC-universal-provider-polkadot" target="_blank"><img src="/github.png" alt="GitHub" width="50" /></a>
       </div>
     </div>
   );

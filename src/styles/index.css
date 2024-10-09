@@ -6,7 +6,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #e6007a;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -122,7 +122,7 @@ button:focus-visible {
 
 
 body {
-  background: linear-gradient(135deg, #430a06, #0f020a);
+  background: linear-gradient(135deg, #e6007a, #aaaaaa);
   height: 100vh;
   margin: 0;
   display: flex;

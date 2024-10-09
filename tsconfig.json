@@ -20,10 +20,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": [
-    "src",
-    "./node_modules/@daochild/tronweb-typescript/dist/index.d.ts"
-  ],
   "references": [
     {
       "path": "./tsconfig.node.json"
