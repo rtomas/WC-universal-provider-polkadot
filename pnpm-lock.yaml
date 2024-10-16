@@ -26,6 +26,9 @@ importers:
       '@web3modal/standalone':
         specifier: ^2.4.3
         version: 2.4.3(react@18.3.1)
+      qrcode.react:
+        specifier: ^4.0.1
+        version: 4.0.1(react@18.3.1)
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -1897,6 +1900,11 @@ packages:
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
+
+  qrcode.react@4.0.1:
+    resolution: {integrity: sha512-Lpj0tPBn561WiQ3QQWXbkx8xTtB8BZkJeMZWLJIL8iaPBCoWzW1IpCeU3gY5MDqsb0+efCvEGkl9O0naP64crA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
 
   qrcode@1.5.3:
     resolution: {integrity: sha512-puyri6ApkEHYiVl4CFzo1tDkAZ+ATcnbJrJ6RiBM1Fhctdn/ix9MTE3hRph33omisEbC/2fcfemsseiKgBPKZg==}
@@ -4767,6 +4775,10 @@ snapshots:
   punycode@1.4.1: {}
 
   punycode@2.3.1: {}
+
+  qrcode.react@4.0.1(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   qrcode@1.5.3:
     dependencies:

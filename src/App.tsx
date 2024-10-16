@@ -2,6 +2,7 @@ import UniversalProvider from "@walletconnect/universal-provider";
 import { Web3Modal } from "@web3modal/standalone"; 
 import { useEffect, useState } from "react";
 import { PolkadotService, Chains } from "./utils/polkadotService";
+import {QRCodeSVG} from 'qrcode.react';
 
 const projectId = import.meta.env.VITE_PROJECT_ID;
 
@@ -28,6 +29,7 @@ const modal = new Web3Modal({
 const App = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState("");
+  const [uri, setUri] = useState("");
 
   // 4. create State for Universal Provider and Service
   const [provider, setProvider] = useState<UniversalProvider | null>(null);
@@ -61,10 +63,11 @@ const App = () => {
 
     provider.on("display_uri", async (uri: string) => {
       console.log("uri", uri);
-      await modal.openModal({
+      setUri(uri);
+      /* await modal.openModal({
         uri,
         standaloneChains: [`polkadot:${Chains.relayChain}`],
-      });
+      }); */
     });
   }, [provider]);
 
@@ -128,6 +131,7 @@ const App = () => {
       ) : (
         <button onClick={connect}>Connect</button>
       )}
+      {uri && !isConnected  && <QRCodeSVG value={uri} size={256} />}
       <div className="circle">
         <a href="https://github.com/rtomas/WC-universal-provider-polkadot" target="_blank"><img src="/github.png" alt="GitHub" width="50" /></a>
       </div>
