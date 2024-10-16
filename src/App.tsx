@@ -1,5 +1,5 @@
 import UniversalProvider from "@walletconnect/universal-provider";
-import { WalletConnectModal } from "@walletconnect/modal";
+import { Web3Modal } from "@web3modal/standalone"; 
 import { useEffect, useState } from "react";
 import { PolkadotService, Chains } from "./utils/polkadotService";
 
@@ -14,15 +14,20 @@ const chains = [`polkadot:${Chains.relayChain}`];
 const methods = ["polkadot_signMessage", "polkadot_signTransaction"];
 
 // 3. create modal instance
-const modal = new WalletConnectModal({
+const modal = new Web3Modal({
   projectId,
-  chains,
+  themeMode: "light",
+  walletConnectVersion: 2,
+  enableExplorer: true,
+  explorerRecommendedWalletIds: ["9ce87712b99b3eb57396cc8621db8900ac983c712236f48fb70ad28760be3f6a"], // get id from https://explorer.walletconnect.com/
+  //termsOfServiceUrl: "<url>",
+  //privacyPolicyUrl: "https://reown.com/privacy",
 });
+
 
 const App = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState("");
-  const [balance, setBalance] = useState<number | null>(null);
 
   // 4. create State for Universal Provider and Service
   const [provider, setProvider] = useState<UniversalProvider | null>(null);
@@ -58,6 +63,7 @@ const App = () => {
       console.log("uri", uri);
       await modal.openModal({
         uri,
+        standaloneChains: [`polkadot:${Chains.relayChain}`],
       });
     });
   }, [provider]);
